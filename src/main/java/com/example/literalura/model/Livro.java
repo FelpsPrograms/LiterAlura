@@ -20,7 +20,7 @@ public class Livro {
 
     public Livro(DadosLivro dadosLivro) {
         this.titulo = dadosLivro.titulo();
-        this.idioma = Idioma.fromString(dadosLivro.idioma().trim());
+        this.idioma = Idioma.fromString(String.valueOf(dadosLivro.idioma()).trim());
         this.numeroDownloads = dadosLivro.numeroDownloads();
     }
 }
