@@ -1,21 +1,25 @@
 package com.example.literalura.main;
 
+import com.example.literalura.model.Autor;
+import com.example.literalura.model.DadosAutor;
 import com.example.literalura.model.DadosLivro;
 import com.example.literalura.model.Livro;
-import com.example.literalura.repository.LivroRepository;
-import com.example.literalura.service.ApiCaller;
+import com.example.literalura.repository.AutorRepository;
 import com.example.literalura.service.ConverteDados;
+import com.example.literalura.service.LivroExtrairDados;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
     private final Scanner teclado = new Scanner(System.in);
-    private final ApiCaller consultor = new ApiCaller();
+    private final LivroExtrairDados extrator = new LivroExtrairDados();
     private final ConverteDados conversor = new ConverteDados();
-    private final LivroRepository repository;
+    private final AutorRepository repository;
 
-    public Main(LivroRepository livroRepository) {
+    public Main(AutorRepository livroRepository) {
         this.repository = livroRepository;
     }
 
@@ -66,10 +70,16 @@ public class Main {
     private void buscarLivroPorTitulo() {
         System.out.println("Digite um título para ser buscado:");
         String titulo = teclado.nextLine();
-        String json = consultor.obterDadosLivro(titulo);
-        DadosLivro dadosLivro = conversor.obterDados(json, DadosLivro.class);
+        String jsonLivro = extrator.extrairPrimeiroLivro(titulo);
+        DadosLivro dadosLivro = conversor.obterDados(jsonLivro, DadosLivro.class);
         Livro livro = new Livro(dadosLivro);
-        repository.save(livro);
+        List<Livro> livros = new ArrayList<>();
+        livros.add(livro);
+        String jsonAutor = extrator.extrairAutor(jsonLivro);
+        DadosAutor dadosAutor = conversor.obterDados(jsonAutor, DadosAutor.class);
+        Autor autor = new Autor(dadosAutor);
+        autor.setLivros(livros);
+        repository.save(autor);
         System.out.println(dadosLivro);
     }
 

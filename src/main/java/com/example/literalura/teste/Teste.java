@@ -19,7 +19,7 @@ public class Teste {
 
         System.out.println("Digite um título para ser buscado:");
         String titulo = teclado.nextLine();
-        String json = apiCaller.obterDadosLivro(titulo);
+        String json = apiCaller.buscarNomeLivro(titulo);
 
         // Criar um ObjectMapper
         ObjectMapper mapper = new ObjectMapper();

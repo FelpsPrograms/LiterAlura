@@ -13,7 +13,7 @@ import java.net.http.HttpResponse;
 public class ApiCaller {
 
     /** Método que busca as informações de todos os livros que tenham o nomeLivro em seu título */
-    public String obterDadosLivro(String nomeLivro) {
+    public String buscarNomeLivro(String nomeLivro) {
         String path = "https://gutendex.com/books/?search=";
         HttpRequest request = HttpRequest
                 .newBuilder()

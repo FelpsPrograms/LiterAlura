@@ -13,8 +13,8 @@ public class Autor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    private Year anoNascimento;
-    private Year anoFalecimento;
+    private int anoNascimento;
+    private int anoFalecimento;
 
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Livro> livros;
@@ -43,19 +43,19 @@ public class Autor {
         this.nome = nome;
     }
 
-    public Year getAnoNascimento() {
+    public int getAnoNascimento() {
         return anoNascimento;
     }
 
-    public void setAnoNascimento(Year anoNascimento) {
+    public void setAnoNascimento(int anoNascimento) {
         this.anoNascimento = anoNascimento;
     }
 
-    public Year getAnoFalecimento() {
+    public int getAnoFalecimento() {
         return anoFalecimento;
     }
 
-    public void setAnoFalecimento(Year anoFalecimento) {
+    public void setAnoFalecimento(int anoFalecimento) {
         this.anoFalecimento = anoFalecimento;
     }
 
@@ -64,6 +64,7 @@ public class Autor {
     }
 
     public void setLivros(List<Livro> livros) {
+        livros.forEach(l -> l.setAutor(this));
         this.livros = livros;
     }
 }
