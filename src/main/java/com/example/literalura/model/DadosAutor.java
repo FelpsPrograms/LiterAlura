@@ -7,8 +7,8 @@ import java.time.Year;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record DadosAutor(
-        @JsonAlias("") String nome,
-        @JsonAlias("") Year anoNascimento,
-        @JsonAlias("") Year anoFalecimento
+        @JsonAlias("name") String nome,
+        @JsonAlias("birth_year") Year anoNascimento,
+        @JsonAlias("death_year") Year anoFalecimento
 ) {
 }

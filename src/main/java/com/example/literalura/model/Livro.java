@@ -15,4 +15,12 @@ public class Livro {
 
     @ManyToOne
     private Autor autor;
+
+    public Livro() {}
+
+    public Livro(DadosLivro dadosLivro) {
+        this.titulo = dadosLivro.titulo();
+        this.idioma = Idioma.fromString(dadosLivro.idioma().trim());
+        this.numeroDownloads = dadosLivro.numeroDownloads();
+    }
 }

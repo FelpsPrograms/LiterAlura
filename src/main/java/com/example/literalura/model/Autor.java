@@ -16,6 +16,14 @@ public class Autor {
     private Year anoNascimento;
     private Year anoFalecimento;
 
-    @OneToMany(mappedBy = "", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Livro> livros;
+
+    public Autor() {}
+
+    public Autor(DadosAutor dadosAutor) {
+        this.nome = dadosAutor.nome();
+        this.anoNascimento = dadosAutor.anoNascimento();
+        this.anoFalecimento = dadosAutor.anoFalecimento();
+    }
 }

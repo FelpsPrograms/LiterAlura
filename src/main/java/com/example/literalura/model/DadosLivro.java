@@ -5,8 +5,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record DadosLivro(
-        @JsonAlias("") String titulo,
-        @JsonAlias("") Idioma idioma,
-        @JsonAlias("") int numeroDownloads
+        @JsonAlias("title") String titulo,
+        @JsonAlias("languages") String idioma,
+        @JsonAlias("download_count") int numeroDownloads
 ) {
+    @Override
+    public String toString() {
+        return
+                "{ titulo = " + titulo +
+                ", idioma = " + idioma +
+                ", numeroDownloads = " + numeroDownloads +
+                '}';
+    }
 }
