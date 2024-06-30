@@ -10,13 +10,4 @@ public record DadosLivro(
         @JsonAlias("title") String titulo,
         @JsonAlias("languages") List<String> idiomas,
         @JsonAlias("download_count") int numeroDownloads
-) {
-    @Override
-    public String toString() {
-        return
-                "{ titulo = " + titulo +
-                ", idioma = " + idiomas +
-                ", numeroDownloads = " + numeroDownloads +
-                " }";
-    }
-}
+) {}

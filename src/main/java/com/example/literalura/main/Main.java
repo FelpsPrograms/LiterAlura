@@ -1,26 +1,26 @@
 package com.example.literalura.main;
 
-import com.example.literalura.model.Autor;
-import com.example.literalura.model.DadosAutor;
-import com.example.literalura.model.DadosLivro;
-import com.example.literalura.model.Livro;
+import com.example.literalura.model.*;
 import com.example.literalura.repository.AutorRepository;
+import com.example.literalura.repository.LivroRepository;
 import com.example.literalura.service.ConverteDados;
 import com.example.literalura.service.LivroExtrairDados;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import javax.swing.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
 
     private final Scanner teclado = new Scanner(System.in);
     private final LivroExtrairDados extrator = new LivroExtrairDados();
     private final ConverteDados conversor = new ConverteDados();
-    private final AutorRepository repository;
+    private final AutorRepository autorRepository;
+    private final LivroRepository livroRepository;
 
-    public Main(AutorRepository livroRepository) {
-        this.repository = livroRepository;
+    public Main(AutorRepository autorRepository, LivroRepository livroRepository) {
+        this.autorRepository = autorRepository;
+        this.livroRepository = livroRepository;
     }
 
     public void showSystem() {
@@ -71,28 +71,89 @@ public class Main {
         System.out.println("Digite um título para ser buscado:");
         String titulo = teclado.nextLine();
         String jsonLivro = extrator.extrairPrimeiroLivro(titulo);
-        DadosLivro dadosLivro = conversor.obterDados(jsonLivro, DadosLivro.class);
-        Livro livro = new Livro(dadosLivro);
-        List<Livro> livros = new ArrayList<>();
-        livros.add(livro);
-        String jsonAutor = extrator.extrairAutor(jsonLivro);
-        DadosAutor dadosAutor = conversor.obterDados(jsonAutor, DadosAutor.class);
-        Autor autor = new Autor(dadosAutor);
-        autor.setLivros(livros);
-        repository.save(autor);
-        System.out.println(dadosLivro);
+        Optional<DadosLivro> optionalDadosLivro = Optional.ofNullable(conversor.obterDados(jsonLivro, DadosLivro.class));
+        if (optionalDadosLivro.isPresent()) {
+            DadosLivro dadosLivro = optionalDadosLivro.get();
+            Optional<Livro> optionalLivro = livroRepository.findByTitulo(dadosLivro.titulo());
+            Livro livro;
+            if (optionalLivro.isEmpty()) {
+                livro = new Livro(dadosLivro);
+                String jsonAutor = extrator.extrairAutor(jsonLivro);
+                DadosAutor dadosAutor = conversor.obterDados(jsonAutor, DadosAutor.class);
+                Optional<Autor> optionalAutor = autorRepository.findByNome(dadosAutor.nome());
+                List<Livro> livros;
+                if (optionalAutor.isEmpty()) {
+                    livros = new ArrayList<>();
+                    livros.add(livro);
+                    Autor autor = new Autor(dadosAutor);
+                    autor.setLivros(livros);
+                    autorRepository.save(autor);
+                } else {
+                    Autor foundAtor = optionalAutor.get();
+                    livros = foundAtor.getLivros();
+                    livros.add(livro);
+                    foundAtor.setLivros(livros);
+                    autorRepository.save(foundAtor);
+                }
+            } else {
+                livro = optionalLivro.get();
+            }
+            System.out.println(livro);
+        } else {
+            System.out.println("Livro não encontrado!");
+        }
+
     }
 
     private void listarLivros() {
+        List<Livro> livrosRegistrados = livroRepository.findAll();
+        livrosRegistrados.forEach(System.out::println);
     }
 
     private void listarAutores() {
+        List<Autor> autoresRegistrados = autorRepository.findAll();
+        autoresRegistrados.forEach(System.out::println);
     }
 
     private void listarAutoresVivos() {
+        int anoEscolhido;
+        System.out.println("Digite o ano:");
+        try {
+            anoEscolhido = teclado.nextInt();
+            teclado.nextLine();
+        } catch (InputMismatchException e) {
+            throw new InputMismatchException("Digite somente números!");
+        }
+            List<Autor> autoresVivos = autorRepository.listarAutoresVivos(anoEscolhido);
+            if (autoresVivos.isEmpty()) {
+                System.out.println("Nenhum autor vivo nesse ano :(");
+            } else {
+                autoresVivos.forEach(System.out::println);
+            }
     }
 
     private void listarLivrosPorIdioma() {
+        System.out.println("""
+                Escolha um dos idiomas abaixo:
+                
+                pt - português
+                en - inglês
+                es - espanhol
+                """);
+        String idiomaSelecionado = teclado.nextLine();
+        List<Livro> livrosNoIdioma = Collections.emptyList();
+        try {
+            livrosNoIdioma = livroRepository.findAll().stream()
+                    .filter(l -> l.getIdioma().equals(Idioma.fromString(idiomaSelecionado)))
+                    .toList();
+        } catch (IllegalArgumentException e) {
+            System.out.println("Opção inválida!");
+        }
+        if (livrosNoIdioma.isEmpty()) {
+            System.out.println("Nenhum livro cadastrado nesse idioma!");
+        } else {
+            livrosNoIdioma.forEach(System.out::println);
+        }
     }
 
 }

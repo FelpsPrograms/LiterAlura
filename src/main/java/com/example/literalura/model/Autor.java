@@ -67,4 +67,21 @@ public class Autor {
         livros.forEach(l -> l.setAutor(this));
         this.livros = livros;
     }
+
+    @Override
+    public String toString() {
+        return
+                "Nome = " + nome +
+                ", anoNascimento = " + anoNascimento +
+                ", anoFalecimento = " + anoFalecimento +
+                ", livros = " + livrosForEach();
+    }
+
+    private String livrosForEach() {
+        StringBuilder titulosLivros = new StringBuilder();
+        for (Livro livro : livros) {
+            titulosLivros.append(livro.getTitulo()).append(", ");
+        }
+        return titulosLivros.toString();
+    }
 }
