@@ -24,7 +24,7 @@ public class Main {
     }
 
     public void showSystem() {
-        System.out.println("*** LiterAlura ***");
+        System.out.println("\n\n\n\n\n*** LiterAlura ***");
         String menu =
                 """   
                 
