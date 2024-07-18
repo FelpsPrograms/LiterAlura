@@ -1,4 +1,4 @@
-# 📚 LiterAlura
+# ![](https://github.com/FelpsPrograms/LiterAlura/blob/main/liter_logo.png)
 
 
 ![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=TERMINADO&color=GREEN&style=for-the-badge)
